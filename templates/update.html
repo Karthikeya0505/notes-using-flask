@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Note</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .note-container {
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      width: 420px;
+      max-width: 90%;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 18px;
+      background: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="note-container">
+    <center><h2>Update Note</h2></center>
+    <form method="POST">
+      <label for="title">New Title</label>
+      <textarea id="title" name="title" rows="8">{{notes_data[1]}}</textarea>
+      <label for="description">New Description</label>
+      <textarea id="description" name="description" rows="8">{{notes_data[2]}}</textarea>
+
+      <button type="submit" class="btn">Update</button>
+      <a href="{{ url_for('viewallnotes') }}" class="btn" style="background:#6c757d; margin-left:10px;">Back</a>
+    </form>
+  </div>
+</body>
+</html>

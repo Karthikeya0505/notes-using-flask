@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter OTP</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .otp-wrapper {
+      position: relative;
+    }
+
+    /* Cat image */
+    .cat {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      animation: bounce 2s infinite ease-in-out;
+      z-index: 1;
+    }
+
+    /* OTP Container */
+    .otp-container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: 0.3s;
+      letter-spacing: 5px;
+    }
+
+    input[type="text"]:focus {
+      border-color: #4facfe;
+      box-shadow: 0px 0px 8px rgba(79, 172, 254, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3a8efc, #00d2fe);
+      transform: scale(1.03);
+    }
+
+    /* Cat bounce animation */
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateX(-50%) translateY(0);
+      }
+      50% {
+        transform: translateX(-50%) translateY(-15px);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .otp-container {
+        width: 90%;
+        padding: 20px;
+      }
+      .cat {
+        width: 120px;
+        top: -90px;
+      }
+    }
+  </style>
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    
+    {% for message in messages %}
+      <center>{{ message }}</center>
+    {% endfor %}
+    
+  {% endif %}
+{% endwith %}
+<body>
+  <form method="POST">
+    <div class="otp-wrapper">
+      <!-- Replace the src with any cute cat image -->
+      <img src="https://png.pngtree.com/png-vector/20240816/ourmid/pngtree-panda-standing-with-hands-down-png-image_13506852.png" alt="Cat" class="cat">
+      
+      <div class="otp-container">
+        <h2>Enter OTP</h2>
+        <input type="text" name="otp" maxlength="6" placeholder="______" required />
+        <button type="submit">Submit</button>
+      </div>
+    </div>
+  </form>
+</body>
+</html>
+

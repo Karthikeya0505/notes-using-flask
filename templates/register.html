@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            /* background-color: white; */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+            margin-right:50%;
+        }
+
+        h2 {
+            margin-bottom: 5px;
+            color: #0d1b2a;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color:white;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .register-btn {
+            width:80%;
+            padding: 12px;
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 2%;
+        }
+
+        .register-btn:hover {
+            opacity: 0.9;
+        }
+
+        .home-btn {
+            background: #2563eb;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+            margin-top:6%;
+        }
+
+        .home-btn:hover {
+            opacity: 0.9;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .login-link a {
+            color:yellow;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    
+    {% for message in messages %}
+      <center>{{ message }}</center>
+    {% endfor %}
+    
+  {% endif %}
+{% endwith %}
+<body style="background-image:url('https://w0.peakpx.com/wallpaper/795/959/HD-wallpaper-best-web-development-company-in-lucknow-web-developer-web-design-web-application-web-development.jpg'); background-repeat: no-repeat; background-size: cover;">
+    <div class="container">
+        <h2>Create Account</h2>
+        <p>Register to start managing your notes</p>
+
+        <form method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username">
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter email">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password">
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <a href="{{url_for('home')}}"><button class="home-btn">Back to Home</button></a>
+
+        <div class="login-link">
+            Already have an account? <a href="{{url_for('userlogin')}}">Login</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animated-content {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <center style="color: rgb(224, 207, 245);">{{ message }}</center>
+    {% endfor %} 
+  {% endif %}
+{% endwith %}
+<body class="bg-gray-950 text-white min-h-screen">
+
+    <div class="animated-content p-4 md:p-8">
+
+        <nav class="bg-gray-900 rounded-2xl shadow-xl p-4 flex flex-col md:flex-row items-center justify-between mb-8">
+            
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <div class="relative group">
+                    <button id="notes-dropdown-btn" class="bg-gray-800 text-white px-5 py-2 rounded-xl flex items-center hover:bg-gray-700 transition-colors duration-300">
+                        Notes
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <ul id="notes-dropdown-menu" class="absolute hidden top-12 left-0 bg-gray-800 text-white rounded-xl shadow-lg z-10 w-48 py-2">
+                        <li><a href="#" id="add-notes-btn" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-300">Add notes</a></li>
+                        <li><a href="#" id="view-all-notes-btn" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-300">View all notes</a></li>
+                        <li><a href="{{url_for('getexceldata')}}" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-300">Get Excel</a></li>
+                    </ul>
+                </div>
+                
+                <div class="relative group">
+                    <button id="files-dropdown-btn" class="bg-gray-800 text-white px-5 py-2 rounded-xl flex items-center hover:bg-gray-700 transition-colors duration-300">
+                        Files
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <ul id="files-dropdown-menu" class="absolute hidden top-12 left-0 bg-gray-800 text-white rounded-xl shadow-lg z-10 w-48 py-2">
+                        <li><a href="#" id="upload-files-btn" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-300">Upload files</a></li>
+                        <li><a href="{{url_for('viewallfiles')}}" id="view-all-files-btn" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-300">View all files</a></li>
+                    </ul>
+                </div>
+            </div>
+            {{session.get('user')}}
+            <div class="flex items-center space-x-4">
+                <form method='POST' action="{{url_for('search')}}">
+                <div class="relative">
+                    <input type="text" placeholder="Search..." name='sdata' class="bg-green-800 text-white px-5 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-300">
+                    <button class="bg-blue-800 text-white px-5 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-300">Submit</button>
+                </div>
+                </form>
+                <a href="{{url_for('logout')}}" class="bg-red-500 text-white px-5 py-2 rounded-xl font-bold hover:bg-red-600 transition-colors duration-300">
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <main class="bg-gray-900 p-8 rounded-2xl shadow-xl min-h-[50vh]">
+
+            <div id="add-notes-section" class="hidden">
+                <h2 class="text-3xl font-bold text-white mb-6">Add New Note</h2>
+                <form action="{{url_for('addnotes')}}" method="POST">
+                    <div class="mb-6">
+                        <label for="note-title" class="block text-gray-400 text-sm font-medium mb-2">Title</label>
+                        <input type="text" id="note-title" name="note-title" placeholder="Enter note title" required
+                               class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400">
+                    </div>
+                    <div class="mb-6">
+                        <label for="note-description" class="block text-gray-400 text-sm font-medium mb-2">Description</label>
+                        <textarea id="note-description" name="note-description" rows="5" placeholder="Write your note here..." required
+                                  class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-teal-600 transition-colors duration-300">
+                        Add Note
+                    </button>
+                </form>
+            </div>
+
+            <div id="view-all-notes-section">
+                <h2 class="text-3xl font-bold text-white mb-6">All Notes</h2>
+                <div class="overflow-x-auto rounded-lg shadow-md">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Notes ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Title</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+
+                            {% if all_notesdata %}
+                            {% for i in all_notesdata %}
+                            <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{i[0]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[1]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[3]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{url_for('viewnotes',nid=i[0])}}" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="{{url_for('updatenotes',nid=i[0])}}" class="text-yellow-400 hover:text-yellow-500 mr-4">Update</a>
+                                    <a href="{{url_for('deletenotes',nid=i[0])}}" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            <!-- <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">002</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">Project Ideas</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">2023-10-26</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="#" class="text-yellow-400 hover:text-yellow-500 mr-4">Update</a>
+                                    <a href="#" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="upload-files-section" class="hidden">
+                <h2 class="text-3xl font-bold text-white mb-6">Upload New File</h2>
+                <form action="{{url_for('uploadfile')}}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-6">
+                        <label for="file-upload" class="block text-gray-400 text-sm font-medium mb-2">Select a file</label>
+                        <input type="file" id="file-upload" name="file-upload" required
+                               class="w-full text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-teal-400 hover:file:bg-gray-600 transition-colors duration-300">
+                    </div>
+                    <button type="submit" class="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-teal-600 transition-colors duration-300">
+                        Upload File
+                    </button>
+                </form>
+            </div>
+            
+            
+            <div id="view-all-files-section">
+                <h2 class="text-3xl font-bold text-white mb-6">All Files</h2>
+                <div class="overflow-x-auto rounded-lg shadow-md">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+                            {% for i in all_filesdata %}
+                            <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{i[0]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[1]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[2]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{url_for('viewfiles',fid=i[0])}}" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="{{url_for('downloadfiles',fid=i[0])}}" class="text-green-400 hover:text-green-500 mr-4">Download</a>
+                                    <a href="{{url_for('deletefiles',fid=i[0])}}" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            <!-- <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">102</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">presentation.pptx</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">2023-10-25</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="#" class="text-green-400 hover:text-green-500 mr-4">Download</a>
+                                    <a href="#" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>                                                                               
+            
+            {% if search_result %}
+            <table class="min-w-full divide-y divide-gray-700">
+                <h2 class="text-3xl font-bold text-white mb-6">Search Results</h2>
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Notes ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Title</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+
+                           
+                            {% for i in search_result %}
+                            <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{i[0]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[1]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[3]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{url_for('viewnotes',nid=i[0])}}" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="{{url_for('updatenotes',nid=i[0])}}" class="text-yellow-400 hover:text-yellow-500 mr-4">Update</a>
+                                    <a href="{{url_for('deletenotes',nid=i[0])}}" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                {% endif %}
+            
+            {% if search_result2 %}
+            <table class="min-w-full divide-y divide-gray-700">
+                 <h2 class="text-3xl font-bold text-white mb-6">Search Results for Files</h2>
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+                            {% for i in search_result2 %}
+                            <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{i[0]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[1]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{i[3]}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{url_for('viewfiles',fid=i[0])}}" class="text-teal-400 hover:text-teal-500 mr-4">View</a>
+                                    <a href="{{url_for('downloadfiles',fid=i[0])}}" class="text-green-400 hover:text-green-500 mr-4">Download</a>
+                                    <a href="{{url_for('deletefiles',fid=i[0])}}" class="text-red-400 hover:text-red-500">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notesDropdownBtn = document.getElementById('notes-dropdown-btn');
+            const filesDropdownBtn = document.getElementById('files-dropdown-btn');
+            const notesMenu = document.getElementById('notes-dropdown-menu');
+            const filesMenu = document.getElementById('files-dropdown-menu');
+
+            const addNotesBtn = document.getElementById('add-notes-btn');
+            const viewAllNotesBtn = document.getElementById('view-all-notes-btn');
+            const uploadFilesBtn = document.getElementById('upload-files-btn');
+            const viewAllFilesBtn = document.getElementById('view-all-files-btn');
+
+            const addNotesSection = document.getElementById('add-notes-section');
+            const viewAllNotesSection = document.getElementById('view-all-notes-section');
+            const uploadFilesSection = document.getElementById('upload-files-section');
+            const viewAllFilesSection = document.getElementById('view-all-files-section');
+
+            const sections = [addNotesSection, viewAllNotesSection, uploadFilesSection, viewAllFilesSection];
+
+            function hideAllSections() {
+                sections.forEach(section => section.classList.add('hidden'));
+            }
+
+            function closeAllDropdowns() {
+                notesMenu.classList.add('hidden');
+                filesMenu.classList.add('hidden');
+            }
+
+            document.addEventListener('click', function(event) {
+                if (notesDropdownBtn.contains(event.target)) {
+                    notesMenu.classList.toggle('hidden');
+                    filesMenu.classList.add('hidden');
+                } else if (filesDropdownBtn.contains(event.target)) {
+                    filesMenu.classList.toggle('hidden');
+                    notesMenu.classList.add('hidden');
+                } else {
+                    closeAllDropdowns();
+                }
+
+                if (addNotesBtn.contains(event.target)) {
+                    event.preventDefault();
+                    hideAllSections();
+                    addNotesSection.classList.remove('hidden');
+                    closeAllDropdowns();
+                } else if (viewAllNotesBtn.contains(event.target)) {
+                    window.location.href="{{url_for('viewallnotes')}}"
+                    // event.preventDefault();
+                    // hideAllSections();
+                    // viewAllNotesSection.classList.remove('hidden');
+                    // closeAllDropdowns();
+                } else if (uploadFilesBtn.contains(event.target)) {
+                    event.preventDefault();
+                    hideAllSections();
+                    uploadFilesSection.classList.remove('hidden');
+                    closeAllDropdowns();
+                } else if (viewAllFilesBtn.contains(event.target)) {
+                    window.location.href="{{url_for('viewallfiles')}}"
+                    // event.preventDefault();
+                    // hideAllSections();
+                    // viewAllFilesSection.classList.remove('hidden');
+                    // closeAllDropdowns();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
