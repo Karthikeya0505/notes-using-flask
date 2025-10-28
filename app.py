@@ -7,9 +7,9 @@ from mysql.connector import (connection)
 from io import BytesIO
 import flask_excel as excel
 import re
-mydb=connection.MySQLConnection(user='root',host='localhost',password='admin',database='notes')
+mydb=connection.MySQLConnection(user='root',host='localhost',password='',database='notes')
 app=Flask(__name__)
-app.secret_key='code@123'
+
 excel.init_excel(app)
 
 @app.route('/')
